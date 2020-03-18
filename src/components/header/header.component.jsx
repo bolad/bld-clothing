@@ -1,6 +1,6 @@
 import React from 'react';
 import './header.styles.scss';
-import { ReactComponent as Logo } from '../../assets/monkey.svg';
+import { ReactComponent as Logo } from '../../assets/crown.svg.svg';
 import { Link } from 'react-router-dom';
 
 const Header = () => (
