@@ -43,7 +43,7 @@ const config = {
             console.log('error creating user', error.message);
         }
     }
-
+    //return the user reference so we can call it in App.js
     return userRef;
   }
   // Initialize Firebase
