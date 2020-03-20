@@ -5,8 +5,8 @@ import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
 import './sign-up.styles.scss';
 
 class SignUp extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             displayName: '',
@@ -29,12 +29,12 @@ class SignUp extends React.Component {
                 await createUserProfileDocument(user, { displayName })
 
                 //if sign up succeeds, return form to original state (clear the form)
-                this.setState = {
+                this.setState({
                     displayName: '',
                     email: '',
                     password: '',
                     confirmPassword: ''
-                }
+                });
             } catch (error) {
                 console.error(error)
             }
