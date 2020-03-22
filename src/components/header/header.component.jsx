@@ -34,7 +34,7 @@ const Header = ({ currentUser }) => (
 );
 
 //extract currentUser state from the userReducer state in rootReducer
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   currentUser: state.user.currentUser
 })
 
