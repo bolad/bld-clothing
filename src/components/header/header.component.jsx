@@ -7,7 +7,7 @@ import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 import './header.styles.scss';
 
-const Header = ({ currentUser }) => (
+const Header = ({ currentUser, hidden }) => (
   <div className='header'>
     <Link className='logo-container' to='/'>
       <Logo className='logo' />
@@ -30,13 +30,18 @@ const Header = ({ currentUser }) => (
       )}
       <CartIcon />
     </div>
-    <CartDropdown />
+    {
+      hidden? null :  <CartDropdown />
+    }
+   
   </div>
 );
 
-//extract currentUser state from the userReducer state in rootReducer
-const mapStateToProps = state => ({
-  currentUser: state.user.currentUser
+//extract currentUser state from the userReducer state in rootReducer using destructuring
+//and do same for other components
+const mapStateToProps = ({user: {currentUser}, cart: { hidden }}) => ({
+  currentUser,
+  hidden
 })
 
 export default connect(mapStateToProps)(Header);
