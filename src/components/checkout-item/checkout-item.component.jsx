@@ -7,7 +7,7 @@ import './checkout-item.styles.scss';
 const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => {
     const { imageUrl, name, price, quantity } = cartItem;
 
-    return(
+    return (
         <div className="checkout-item">
         <div className="image-container">
             <img src={imageUrl} alt="item" />
