@@ -1,8 +1,25 @@
 import { createSelector } from 'reselect';
 
-const selectShop = state => state.shop
+const selectShop = state => state.shop;
 
 export const selectCollections = createSelector(
     [selectShop],
     shop => shop.collections
+);
+
+//create a selector to convert the collection object into an array so we can still use 
+// .map to iterate over it
+export const selectCollectionsForPreview = createSelector(
+    [selectCollections],
+    //Object.keys returns the keys of an object as an array, maps over the array of
+    // keys and get the value of the cllections object at that key
+    collections => Object.keys(collections).map(key => collections[key])
+
 )
+
+//Find the collection id matching the url param of the collection id map
+export const selectCollection = collectionUrlParam => 
+    createSelector(
+        [selectCollections],
+        collections => collections[collectionUrlParam]
+    );
