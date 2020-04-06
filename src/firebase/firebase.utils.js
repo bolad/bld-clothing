@@ -47,9 +47,34 @@ const config = {
     return userRef;
   }
 
-  export const addCollectionAndDocuments = (collectionKey, objectToAdd) => {
+  export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
     const collectionRef = firestore.collection(collectionKey);
-    console.log(collectionRef);
+    console.log(collectionRef)
+
+    const batch = firestore.batch();
+    
+    objectsToAdd.forEach(obj => {
+        //get a new reference document from fireebase 
+        const newDocRef = collectionRef.doc();
+        //console.log(newDocRef)
+        batch.set(newDocRef, obj);
+    });
+     //fireoff th batch request
+    return await batch.commit();
+  }
+
+  //convert collections snapshot from and array to an object to store in redux
+  export const convertCollectionsSnapshotToMap = (collections) => {
+    const transformedCollections = collections.doc.map(doc => {
+        const {title, items } = doc.data();
+        return {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+        };
+    });
+    console.log(transformedCollections);
   }
 
   // Initialize Firebase
