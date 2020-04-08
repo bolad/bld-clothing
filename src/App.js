@@ -34,6 +34,7 @@ class App extends React.Component {
       } else {
         setCurrentUser(userAuth)
       }
+      //addCollectionAndDocuments('collections', collectionsArray.map(( {title, items }) => ({ title, items })));
     });
   }
 
@@ -74,7 +75,7 @@ const mapStateToProps = createStructuredSelector({
 //call the setCurrentUser action and pass in the user object as the payload, and pass it to
 //every reducer via dispatch
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user)),
+  setCurrentUser: user => dispatch(setCurrentUser(user))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

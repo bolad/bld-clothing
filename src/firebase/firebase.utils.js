@@ -13,60 +13,68 @@ const config = {
     measurementId: "G-WQR7SMQQBJ"
   };
 
-  //take the userAuth object received from authentication library and store in database
-  export const createUserProfileDocument = async (userAuth, additionalData) => {
-    if(!userAuth) return;
+// Initialize Firebase
+firebase.initializeApp(config);
 
-    //Get the user reference from firestore
-    const userRef = firestore.doc(`users/${userAuth.uid}`);
+//take the userAuth object received from authentication library and store in database
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+if(!userAuth) return;
 
-    //wait to GET the data from userRef and store it in snapShot
-    const snapShot = await userRef.get();
+//Get the user reference from firestore
+const userRef = firestore.doc(`users/${userAuth.uid}`);
 
-    //Save snapShot to database if it does not exist
-    if(!snapShot.exists) {
-        //Destructure which data from userAuth you want to save to database
-        const { displayName, email } = userAuth;
-        const createdAt = new Date();
+//wait to GET the data from userRef and store it in snapShot
+const snapShot = await userRef.get();
 
-        //Make asynchronous to the database to store the data
-        try {
-            //Create user with .set()
-            await userRef.set({
-                displayName,
-                email,
-                createdAt,
-                ...additionalData
-            })
-            
-        } catch (error) {
-            console.log('error creating user', error.message);
-        }
+//Save snapShot to database if it does not exist
+if(!snapShot.exists) {
+    //Destructure which data from userAuth you want to save to database
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+
+    //Make asynchronous to the database to store the data
+    try {
+        //Create user with .set()
+        await userRef.set({
+            displayName,
+            email,
+            createdAt,
+            ...additionalData
+        })
+        
+    } catch (error) {
+        console.log('error creating user', error.message);
     }
-    //return the user reference so we can call it in App.js
-    return userRef;
-  }
+}
+//return the user reference so we can call it in App.js
+return userRef;
+};
 
-  export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
     const collectionRef = firestore.collection(collectionKey);
-    console.log(collectionRef)
 
+    //group all calls together into one big request
     const batch = firestore.batch();
-    
-    objectsToAdd.forEach(obj => {
-        //get a new reference document from fireebase 
-        const newDocRef = collectionRef.doc();
-        //console.log(newDocRef)
-        batch.set(newDocRef, obj);
-    });
-     //fireoff th batch request
-    return await batch.commit();
-  }
 
-  //convert collections snapshot from and array to an object to store in redux
-  export const convertCollectionsSnapshotToMap = (collections) => {
-    const transformedCollections = collections.doc.map(doc => {
+    objectsToAdd.forEach(obj => {
+    // get a new reference document from firebase collectionRef and generate a random ID
+    // for it
+    const newDocRef = collectionRef.doc();
+    //console.log(newDocRef)
+    batch.set(newDocRef, obj);
+});
+    //fireoff the batch request to create collections in firestore
+return await batch.commit();
+};
+
+//take snapshot after componentDidMount( from ShopPage) and convert collections snapshot from 
+//and array to an object customise it and save it to store in redux
+export const convertCollectionsSnapshotToMap = (collections) => {
+    const transformedCollections = collections.docs.map(doc => {
         const {title, items } = doc.data();
+
+        //return an actual object from the map function that represents all the data we want
+        //for our frontend
         return {
             routeName: encodeURI(title.toLowerCase()),
             id: doc.id,
@@ -74,19 +82,22 @@ const config = {
             items
         };
     });
-    console.log(transformedCollections);
-  }
+    //console.log(transformedCollections);
 
-  // Initialize Firebase
-  firebase.initializeApp(config);
+    //pass in an initial empty object
+    return transformedCollections.reduce((accumulator, collection) => {
+        accumulator[collection.title.toLowerCase()] = collection;
+        return accumulator; //so it goes into the next reduce iteration
+    }, {});
+}
 
-  export const auth = firebase.auth();
-  export const firestore = firebase.firestore();
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
 
-  const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({prompt: 'select_account'});
-  export const signInWithGoogle = () => auth.signInWithPopup(provider);
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({prompt: 'select_account'});
+export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
-  export default firebase;
+export default firebase;
 
 
