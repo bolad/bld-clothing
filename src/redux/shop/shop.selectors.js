@@ -12,8 +12,9 @@ export const selectCollections = createSelector(
 export const selectCollectionsForPreview = createSelector(
     [selectCollections],
     //Object.keys returns the keys of an object as an array, maps over the array of
-    // keys and get the value of the cllections object at that key
-    collections => Object.keys(collections).map(key => collections[key])
+    // keys and get the value of the collections object at that key
+    collections => 
+        collections ? Object.keys(collections).map(key => collections[key]) : []
 
 )
 
@@ -21,5 +22,7 @@ export const selectCollectionsForPreview = createSelector(
 export const selectCollection = collectionUrlParam => 
     createSelector(
         [selectCollections],
-        collections => collections[collectionUrlParam]
+        //look inside the collections map object to find the corresponding colection object
+        //and pass it to the CollectionPage component
+        collections => collections ? collections[collectionUrlParam] : null
     );
