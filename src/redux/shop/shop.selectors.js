@@ -4,7 +4,7 @@ const selectShop = state => state.shop;
 
 export const selectCollections = createSelector(
     [selectShop],
-    shop => shop.collections
+    shop => shop.collections //state
 );
 
 //create a selector to convert the collection object into an array so we can still use 
@@ -25,4 +25,15 @@ export const selectCollection = collectionUrlParam =>
         //look inside the collections map object to find the corresponding colection object
         //and pass it to the CollectionPage component
         collections => collections ? collections[collectionUrlParam] : null
-    );
+);
+
+export const selectIsCollectionsFetching = createSelector(
+    [selectShop],
+    shop => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+    [selectShop],
+    //if our collections is loaded return true, otherwise return false
+    shop => !!shop.collections
+);
