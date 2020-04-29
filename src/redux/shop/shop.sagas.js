@@ -1,5 +1,5 @@
 //listen for every action of a specific type passed to it
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put, all } from 'redux-saga/effects';
 import ShopActionTypes from './shop.types';
 
 import { firestore, convertCollectionsSnapshotToMap } from '../../firebase/firebase.utils';
@@ -14,8 +14,8 @@ export function* fetchCollectionsAsync() {
             snapshot
         );
         yield put(fetchCollectionsSuccess(collectionsMap))
-    } catch (e) {
-        yield put(fetchCollectionsFailure(e.message))
+    } catch (error) {
+        yield put(fetchCollectionsFailure(error.message))
     }
 
     //     this.unsuscribeFromSnapShot = collectionRef.onSnapshot( async snapshot => {**Observable call**
@@ -34,4 +34,10 @@ export function* fetchCollectionsStart() {
         ShopActionTypes.FETCH_COLLECTIONS_START, 
         fetchCollectionsAsync
     );
+}
+
+export function* shopSagas() {
+    yield(all([
+        call(fetchCollectionsStart)
+    ]))
 }

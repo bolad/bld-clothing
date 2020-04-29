@@ -2,15 +2,16 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import './App.css';
-import { setCurrentUser } from './redux/user/user.actions';
+
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import CheckoutPage from './pages/checkout/checkout.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import Header from './components/header/header.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { selectCurrentUser } from './redux/user/user.selector';
 import { createStructuredSelector } from 'reselect';
+
+import { checkUserSession } from './redux/user/user.actions';
 
 class App extends React.Component {
 
@@ -18,24 +19,25 @@ class App extends React.Component {
 
   componentDidMount() {
 
-    const { setCurrentUser } = this.props;
+    const { checkUserSession } = this.props;
+    checkUserSession();
 
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-        //whenever the document snapShot object updates
-        userRef.onSnapshot(snapShot => {
-          //set the currentUser state to the snapShot data
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
-          });
-        });
-      } else {
-        setCurrentUser(userAuth)
-      }
-      //addCollectionAndDocuments('collections', collectionsArray.map(( {title, items }) => ({ title, items })));
-    });
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   if (userAuth) {
+    //     const userRef = await createUserProfileDocument(userAuth);
+    //     //whenever the document snapShot object updates
+    //     userRef.onSnapshot(snapShot => {
+    //       //set the currentUser state to the snapShot data
+    //       setCurrentUser({
+    //         id: snapShot.id,
+    //         ...snapShot.data()
+    //       });
+    //     });
+    //   } else {
+    //     setCurrentUser(userAuth)
+    //   }
+    //   //addCollectionAndDocuments('collections', collectionsArray.map(( {title, items }) => ({ title, items })));
+    // });
   }
 
   componentWillUnmount() {
@@ -72,10 +74,8 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 });
 
-//call the setCurrentUser action and pass in the user object as the payload, and pass it to
-//every reducer via dispatch
 const mapDispatchToProps = dispatch => ({
-  setCurrentUser: user => dispatch(setCurrentUser(user))
+  checkUserSession: () => dispatch(checkUserSession())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
