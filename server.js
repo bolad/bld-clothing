@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'production') {
 
     //for every url we pass in get a request and response
     app.get('*', function(req, res) {
-        res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+        res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
     });
 }
 
@@ -49,4 +49,4 @@ app.post('/payment', (req, res) => {
             res.status(200).send({ success: stripeRes});
         }
     })
-})
+});
