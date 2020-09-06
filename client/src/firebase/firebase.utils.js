@@ -18,36 +18,36 @@ firebase.initializeApp(config);
 
 //take the userAuth object received from authentication library and store in database
 export const createUserProfileDocument = async (userAuth, additionalData) => {
-if(!userAuth) return;
+    if(!userAuth) return;
 
-//Get the user reference from firestore
-const userRef = firestore.doc(`users/${userAuth.uid}`);
+    //Get the user reference from firestore
+    const userRef = firestore.doc(`users/${userAuth.uid}`);
 
-//wait to GET the data from userRef and store it in snapShot
-const snapShot = await userRef.get();
+    //wait to GET the data from userRef and store it in snapShot
+    const snapShot = await userRef.get();
 
-//Save snapShot to database if it does not exist
-if(!snapShot.exists) {
-    //Destructure which data from userAuth you want to save to database
-    const { displayName, email } = userAuth;
-    const createdAt = new Date();
+    //Save snapShot to database if it does not exist
+    if(!snapShot.exists) {
+        //Destructure which data from userAuth you want to save to database
+        const { displayName, email } = userAuth;
+        const createdAt = new Date();
 
-    //Make asynchronous to the database to store the data
-    try {
-        //Create user with .set()
-        await userRef.set({
-            displayName,
-            email,
-            createdAt,
-            ...additionalData
-        })
-        
-    } catch (error) {
-        console.log('error creating user', error.message);
+        //Make asynchronous request to the database to store the data
+        try {
+            //Create user with .set()
+            await userRef.set({
+                displayName,
+                email,
+                createdAt,
+                ...additionalData
+            })
+            
+        } catch (error) {
+            console.log('error creating user', error.message);
+        }
     }
-}
-//return the user reference so we can call it in App.js
-return userRef;
+    //return the user reference so we can call it in App.js
+    return userRef;
 };
 
 export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
@@ -103,8 +103,13 @@ export const getCurrentUser = () => {
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
+//get  access to the GoogleAuthProvider class from the auth library
 export const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+//always trigger the google popup whenever we use the google auth provider for authentication
+//and sign in
 googleProvider.setCustomParameters({ prompt: 'select_account' });
+
 export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;
