@@ -10,6 +10,9 @@ import { checkUserSession } from './redux/user/user.actions';
 
 import Spinner from './components/spinner/spinner.component';
 
+
+import { GlobalStyle } from './global.styles';
+
 const HomePage = lazy(() => import('./pages/homepage/homepage.component'))
 const ShopPage = lazy(() => import('./pages/shop/shop.component'))
 const CheckoutPage = lazy(() => import('./pages/checkout/checkout.component'))
@@ -25,6 +28,7 @@ const App = ({ checkUserSession, currentUser }) => {
 
   return (
     <div>
+      <GlobalStyle />
       <Suspense fallback={ <Spinner /> }>
         <Header />
         <Switch>
