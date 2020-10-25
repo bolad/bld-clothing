@@ -35,16 +35,16 @@ const App = ({ checkUserSession, currentUser }) => {
           <Route exact path='/' component={HomePage} />
           <Route path='/shop' component={ShopPage} />
           <Route exact path='/checkout' component={CheckoutPage} />
-          <Route 
-            exact 
-            path='/signin' 
-            render={() => 
+          <Route
+            exact
+            path='/signin'
+            render={() =>
               currentUser ? (
                 <Redirect to="/" />
                 ) : (
                   <SignInAndSignUpPage />
                 )
-                } 
+                }
             />
         </Switch>
       </Suspense>
@@ -52,7 +52,7 @@ const App = ({ checkUserSession, currentUser }) => {
   );
 }
 
-//get currentUser from the userReducer from redux state(rootReducer) 
+//get currentUser from the userReducer from redux state(rootReducer)
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 });
